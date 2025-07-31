@@ -36,9 +36,6 @@ def connect_db():
 
 
 # basic login function
-SECRET_KEY = 'keynotsosecret'
-ALGORITHM = 'HS256'
-
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -59,7 +56,7 @@ def login():
             token = jwt.encode({
                 'user_id': user['id'],
                 'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
-            }, SECRET_KEY, algorithm=ALGORITHM)
+            }, os.getenv('SECRET_KEY'), algorithm=os.getenv('ALGORITHM'))
 
             return {'token': token}, 200
     except pymysql.MySQLError as e:
@@ -86,4 +83,4 @@ def validate():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
