@@ -4,15 +4,16 @@ import os
 import datetime
 import jwt
 import pymysql
-
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
 # configuration
+load_dotenv()
 db_config = {
-    'host': os.getenv('DB_HOST', 'localhost'),
-    'user': os.getenv('DB_USER', 'root'),
-    'password': os.getenv('DB_PASSWORD', 'rootAdmin'),
+    'host': os.getenv('DB_HOST'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
     'port': int(os.getenv('DB_PORT', 3306))
 }
 
@@ -75,7 +76,8 @@ def validate():
 
     token = token.split(" ")[1]  # Assuming the format is "Bearer <token>"
     try:
-        decoded = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        decoded = jwt.decode(token, os.getenv('SECRET_KEY'),
+                             algorithms=[os.getenv('ALGORITHM')])
         return {'message': 'Token is valid', 'user_id': decoded['user_id']}, 200
     except jwt.ExpiredSignatureError:
         return {'message': 'Token has expired'}, 401
@@ -84,4 +86,4 @@ def validate():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5000)
