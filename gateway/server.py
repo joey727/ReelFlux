@@ -11,7 +11,7 @@ from storage import util
 
 server = Flask(__name__)
 server.config['MONGO_URI'] = os.getenv(
-    'MONGO_URI', 'mongodb://host:minikube.internal:27017/videos_db')
+    'MONGO_URI', 'mongodb://host.minikube.internal:27017/videos_db')
 mongo = PyMongo(server)
 
 # Initialize GridFS for file storage

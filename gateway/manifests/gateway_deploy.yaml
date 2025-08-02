@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: joey727/gateway:latest
+        image: joey727/gateway:1.1
         ports:
         - containerPort: 8080
         envFrom:
