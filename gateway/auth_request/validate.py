@@ -14,4 +14,4 @@ def validate(request):
     if response.status_code != 200:
         return (401, 'Invalid token')
 
-    return response.json(), (200, 'Token is valid')
+    return response.text, (200, 'Token is valid')

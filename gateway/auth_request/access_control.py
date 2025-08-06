@@ -14,4 +14,4 @@ def access_control(request):
     if response.status_code != 200:
         return None, (401, 'Unauthorized')
 
-    return response.txt, (200, 'OK')
+    return response.text, (200, 'OK')
