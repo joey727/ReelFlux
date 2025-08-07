@@ -6,3 +6,4 @@ data:
   host: host.minikube.internal
   user: root
   port: "3306"
+  database: demo 

@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: joey727/auth-service:1.1
+          image: joey727/auth-service:latest
           ports:
             - containerPort: 5000
           envFrom:

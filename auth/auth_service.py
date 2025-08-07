@@ -5,6 +5,7 @@ import datetime
 import jwt
 import pymysql
 from dotenv import load_dotenv
+from pymysql.cursors import DictCursor
 
 app = Flask(__name__)
 
@@ -13,6 +14,7 @@ load_dotenv()
 db_config = {
     'host': os.getenv('DB_HOST'),
     'user': os.getenv('DB_USER'),
+    'database': os.getenv('DATABASE'),
     'password': os.getenv('DB_PASSWORD'),
     'port': int(os.getenv('DB_PORT', 3306))
 }
@@ -22,17 +24,16 @@ def connect_db():
     try:
         connection = pymysql.connect(
             host=db_config['host'],
+            database=db_config['database'],
             user=db_config['user'],
             password=db_config['password'],
-            port=db_config['port']
+            port=db_config['port'],
+            cursorclass=DictCursor
         )
         return connection
     except pymysql.MySQLError as e:
         print(f"Error connecting to database: {e}")
         return None
-    finally:
-        if connection:
-            connection.close()
 
 
 # basic login function
@@ -62,6 +63,8 @@ def login():
     except pymysql.MySQLError as e:
         print(f"Database error: {e}")
         return {'message': 'Database error'}, 500
+    finally:
+        connection.close()
 
 
 # validate token function
@@ -83,4 +86,4 @@ def validate():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5000)
