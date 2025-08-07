@@ -1,17 +1,19 @@
 import os
-import requests as req  # type: ignore
+import requests as req
+from requests.auth import HTTPBasicAuth
 
 
 def access_control(request):
     auth = request.authorization
     if not auth:
-        return None, (401, 'Unauthorized')
+        return None, ('invalid credentials', 401)
 
     response = req.post(
-        os.getenv('AUTH_SERVICE_URL') + '/login', json={
-            'username': auth.username,
-            'password': auth.password}),
+        os.getenv('AUTH_SERVICE_URL') + '/login', auth=HTTPBasicAuth(
+            auth.username, auth.password))
+    print(response)
     if response.status_code != 200:
-        return None, (401, 'Unauthorized')
+        return None, response.status_code
 
-    return response.text, (200, 'OK')
+    token = response.json().get('token')
+    return token, 200

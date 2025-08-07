@@ -27,16 +27,16 @@ channel = connection.channel()
 
 @server.route('/login', methods=['POST'])
 def login():
-    token, status = access_control(request)
+    token, status = access_control.access_control(request)
 
-    if status[0] != 200:
-        return status[1], status[0]
-    return token
+    if not token:
+        return {"message": "Authentication failed"}, status
+    return {"token": token}, 200
 
 
 @server.route('/upload', methods=['POST'])
 def upload():
-    data, status = validate(request)
+    data, status = validate.validate(request)
     if status[0] != 200:
         return status[1], status[0]
 
@@ -56,7 +56,7 @@ def upload():
 
 @server.route('/download', methods=['GET'])
 def download():
-    data, status = validate(request)
+    data, status = validate.validate(request)
     if status[0] != 200:
         return status[1], status[0]
 

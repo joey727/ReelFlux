@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: gateway-configmap
 data:
-  AUTH_SERVICE_URL: "auth:5000"
+  AUTH_SERVICE_URL: "http://auth-service:5000"
  

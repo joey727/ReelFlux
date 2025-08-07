@@ -12,6 +12,6 @@ def validate(request):
             'Authorization': token})
 
     if response.status_code != 200:
-        return (401, 'Invalid token')
+        return 'Invalid token', response.status_code
 
-    return response.text, (200, 'Token is valid')
+    return response.text, 200
