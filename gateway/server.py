@@ -18,8 +18,8 @@ mongo_mp3 = PyMongo(
     server, uri="mongodb://host.minikube.internal:27017/mp3s_db")
 
 # Initialize GridFS for file storage
-fs_video = gridfs.GridFS(mongo_videos)
-fs_mp3 = gridfs.GridFS(mongo_mp3)
+fs_video = gridfs.GridFS(mongo_videos.db)
+fs_mp3 = gridfs.GridFS(mongo_mp3.db)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
