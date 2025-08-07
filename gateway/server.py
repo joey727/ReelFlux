@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_pymongo import PyMongo
 import os
 import json
@@ -7,15 +7,19 @@ import gridfs
 import pika
 from auth_request import access_control, validate
 from storage import util
+from bson.objectid import ObjectId
 
 
 server = Flask(__name__)
-server.config['MONGO_URI'] = os.getenv(
-    'MONGO_URI', 'mongodb://host.minikube.internal:27017/videos_db')
-mongo = PyMongo(server)
+
+mongo_videos = PyMongo(
+    server, uri="mongodb://host.minikube.internal:27017/videos_db")
+mongo_mp3 = PyMongo(
+    server, uri="mongodb://host.minikube.internal:27017/mp3s_db")
 
 # Initialize GridFS for file storage
-fs = gridfs.GridFS(mongo.db)
+fs_video = gridfs.GridFS(mongo_videos)
+fs_mp3 = gridfs.GridFS(mongo_mp3)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -37,8 +41,8 @@ def login():
 @server.route('/upload', methods=['POST'])
 def upload():
     data, status = validate.validate(request)
-    if status[0] != 200:
-        return status[1], status[0]
+    if status != 200:
+        return "Validation error", status
 
     access = json.loads(data)
     if access['user_id']:
@@ -46,7 +50,7 @@ def upload():
         if not file:
             return 'No file uploaded', 400
 
-        err = util.upload_file(fs, file, channel, access)
+        err = util.upload_file(fs_video, file, channel, access)
         if err:
             return err
         return 'File uploaded successfully', 200
@@ -57,8 +61,8 @@ def upload():
 @server.route('/download', methods=['GET'])
 def download():
     data, status = validate.validate(request)
-    if status[0] != 200:
-        return status[1], status[0]
+    if status != 200:
+        return "Validation error", status
 
     access = json.loads(data)
     if access['user_id']:
@@ -66,11 +70,14 @@ def download():
         if not file_id:
             return 'File ID is required', 400
 
-        file_data = util.download_file(fs, file_id)
-        if not file_data:
-            return 'File not found', 404
+        try:
+            file = fs_mp3.get(ObjectId(file_id))
+            return send_file(file, download_name=f"{file_id}.mp3")
 
-        return file_data, 200
+        except Exception as e:
+            print(e)
+            return "Internal Server Error", 500
+
     else:
         return 'Not Authorized', 401
 

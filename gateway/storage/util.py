@@ -1,5 +1,7 @@
+from flask import send_file
 import pika
 import json
+from bson.objectid import ObjectId
 
 
 def upload_file(fs, file, channel, access):
@@ -15,3 +17,7 @@ def upload_file(fs, file, channel, access):
         return None
     except Exception as e:
         return str(e)
+
+
+def download_file(fs_mp3, file_id):
+    pass
