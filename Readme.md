@@ -53,7 +53,8 @@ All services communicate via internal Kubernetes networking.
 3. Alternatively can pull images i already built but it's better make changes (which best suit)
     and rebuild 
 4. Apply kubernetes configurations
-    ```kubectl apply -f manifests
+    ```bash
+    kubectl apply -f manifests
 
 
-# Contributions and Improvements are welcome 
+#### Contributions and Improvements are welcome 
