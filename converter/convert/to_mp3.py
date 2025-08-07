@@ -21,7 +21,7 @@ def start(message, fs_videosDb, fs_mp3Db, channel):
     tf.close()
 
     # write audio to file
-    tf_path = tempfile.gettempdir() + f"/{message["file_id"]}.mp3"
+    tf_path = tempfile.gettempdir() + f"/{message['file_id']}.mp3"
     audio.write_audiofile(tf_path)
 
     # save audio file to mongo db
